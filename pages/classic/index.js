@@ -27,7 +27,8 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function(options) {
-    classicModel.getLatest((res) => {
+    classicModel.getLatest().then((res) => {
+      console.log(res)
       this.setData({
         classic: res,
         likeCount: res.fav_nums,
@@ -43,7 +44,7 @@ Page({
 
   // right
   onPrev: function () {
-    this._updateClassic('previous')
+    this._updateClassic('prev')
   },
 
   // left
@@ -53,7 +54,8 @@ Page({
 
   _updateClassic: function(nextOrPrevious) {
     let index = this.data.classic.index
-    classicModel.getClassic(index, nextOrPrevious, (res) => {
+    const classic = classicModel.getClassic(index, nextOrPrevious)
+    classic.then((res) => {
       this._getLikeStatus(res.id, res.type)
       this.setData({
         classic: res,
@@ -64,7 +66,8 @@ Page({
   },
 
   _getLikeStatus: function (artID, category){
-    likeModel.getClassicLikeStatus(artID, category, (res) => {
+    const status = likeModel.getClassicLikeStatus(artID, category)
+    status.then((res) => {
       this.setData({
         likeCount: res.fav_nums,
         likeStatus: res.like_status

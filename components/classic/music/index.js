@@ -7,7 +7,8 @@ Component({
    */
   behaviors: [classicBeh],
   properties: {
-    src: String
+    src: String,
+    title: String
   },
 
   /**
@@ -35,6 +36,7 @@ Component({
           playing: true
         })
         mMgr.src = this.properties.src
+        mMgr.title = this.properties.title
       }else{
         this.setData({
           playing: false

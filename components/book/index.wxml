@@ -3,7 +3,7 @@
   <view class="description">
     <text class="text">{{book.title}}</text>
     <text class="author">{{book.author}}</text>
-    <view class="foot">
+    <view class="foot" wx:if="{{showLike}}">
       <text class="footer">{{book.fav_nums}}  喜欢</text>
     </view>
   </view>

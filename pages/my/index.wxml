@@ -21,7 +21,7 @@
   <view class="like-container">
     <image class="headline" src="/images/my/like.png" />
     <view class="preview-container">
-      <block wx:for="{{classics}}">
+      <block wx:for="{{classics}}" wx:key="item">
         <preview-cmp bind:tap="onPreviewTap" class="preview" classic="{{item}}" />
       </block>
     </view>

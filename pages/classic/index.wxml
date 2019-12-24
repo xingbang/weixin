@@ -9,7 +9,7 @@
     </view>
   </view>
   <v-movie hidden="{{classic.type!=100}}" img="{{classic.image}}" content="{{classic.content}}"/>
-  <v-music src="{{classic.url}}" wx:if="{{classic.type==200}}" img="{{classic.image}}" content="{{classic.content}}"/>
+  <v-music src="{{classic.url}}" title="{{classic.title}}" wx:if="{{classic.type==200}}" img="{{classic.image}}" content="{{classic.content}}"/>
   <v-essay hidden="{{classic.type!=300}}" img="{{classic.image}}" content="{{classic.content}}"/>
   <v-nav bind:left="onNext" bind:right="onPrev" title="{{classic.title}}" first="{{first}}" latest="{{latest}}" class="nav"/>
 </view>

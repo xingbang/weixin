@@ -28,7 +28,7 @@ Page({
   },
 
   getMyFavor(){
-    classicModel.getMyFavor(res => {
+    classicModel.getMyFavor().then(res => {
       this.setData({
         classics: res
       })

@@ -1,8 +1,9 @@
-import {HTTP} from '../utils/http.js'
+import {HTTP} from '../utils/http-p.js'
 
 class ClassicModel extends HTTP {
 
   // 获取最新一期
+  /*
   getLatest(sCallback) {
     this.request({
       url: 'classic/latest',
@@ -13,9 +14,22 @@ class ClassicModel extends HTTP {
         wx.setStorageSync(key, res)
       }
     })
+  }*/
+
+  getLatest() {
+    const latest = this.request({
+      url: 'classic/latest'
+    })
+    latest.then(res => {
+      this._setLatestIndex(res.index)
+      const key = this._getKey(res.index)
+      wx.setStorageSync(key, res)
+    })
+    return latest
   }
 
   // 获取上一期,下一期
+  /*
   getClassic(index, nextOrPrevious, sCallback) {
     let key = nextOrPrevious == 'next' ? this._getKey(index + 1) : this._getKey(index - 1)
     let classic = wx.getStorageSync(key)
@@ -30,6 +44,23 @@ class ClassicModel extends HTTP {
     } else {
       sCallback(classic)
     }
+  }*/
+
+  getClassic(index, nextOrPrevious) {
+    // 缓存中寻找 or API 写入到缓存中
+    // key 确定key
+    let key = nextOrPrevious == 'next' ?
+      this._getKey(index + 1) : this._getKey(index - 1)
+    let classic = wx.getStorageSync(key)
+    if (!classic) {
+      classic = this.request({
+        url: `classic/${index}/${nextOrPrevious}`
+      })
+      classic.then(res => {
+        wx.setStorageSync(this._getKey(res.index), res)
+      })
+    }
+    return Promise.resolve(classic)
   }
 
   // 是否第一期
@@ -44,11 +75,9 @@ class ClassicModel extends HTTP {
   }
 
   getMyFavor(success) {
-    const params = {
-      url: 'classic/favor',
-      success: success
-    }
-    this.request(params)
+    return this.request({
+      url: 'classic/favor'
+    })
   }
 
   _setLatestIndex(index) {

@@ -19,13 +19,13 @@ class BookModel extends HTTP {
   // 获取书籍点赞信息
   getLikeStatus(bid) {
     return this.request({
-      url: `/book/${bid}/favor`
+      url: `book/${bid}/favor`
     })
   }
 
   getMyBookCount() {
     return this.request({
-      url: '/book/favor/count'
+      url: 'book/favor/count'
     })
   }
 

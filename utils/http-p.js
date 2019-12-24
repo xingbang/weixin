@@ -1,4 +1,5 @@
 import { config } from '../config.js'
+import { Token } from '../models/token.js'
 
 const tips = {
   1: '抱歉，出现一个错误',
@@ -16,7 +17,7 @@ export class HTTP {
   }
 
   // request
-  _request(url, resolve, reject, method='GET', data={}) {
+  _request(url, resolve, reject, method='GET', data={}, noRefetch = false) {
     // url, data, method
     wx.request({
       url: config.api_base_url + url,
@@ -24,7 +25,7 @@ export class HTTP {
       data: data,
       header: {
         'content-type': 'application/json',
-        'appkey': config.appkey
+        authorization: this._getToken()
       },
       success: (res) => {
         // startsWith
@@ -32,11 +33,22 @@ export class HTTP {
         if (code.startsWith('2')) {
           resolve(res.data)
         } else {
-          reject()
-          const error_code = res.data.error_code
-          this._show_error(error_code)
+          if (code == '403') {
+            if (!noRefetch) {
+              this._refetch(
+                url,
+                resolve,
+                reject,
+                data,
+                method
+              )
+            }
+          } else {
+            reject()
+            const error_code = res.data.error_code
+            this._show_error(error_code)
+          }
         }
-
       },
       fail: (err) => {
         reject()
@@ -50,10 +62,25 @@ export class HTTP {
     if (!error_code) {
       error_code = 1
     }
+    const tip = tips[error_code]
     wx.showToast({
-      title: tips[error_code],
+      title: tip ? tip : tips[1],
       icon: 'none',
       duration: 2000
     })
+  }
+
+  _refetch(...param) {
+    var token = new Token();
+    token.getTokenFromServer((token) => {
+      this._request(...param, true);
+    });
+  }
+
+  // 获取缓存token
+  _getToken() {
+    const token = wx.getStorageSync('token')
+    // console.log(result)
+    return 'Bearer ' + token
   }
 }

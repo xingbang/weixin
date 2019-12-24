@@ -29,13 +29,11 @@ Component({
   },
 
   attached(){
-    const historyWords = keywordModel.getHistory()
-    const hotWords = keywordModel.getHot()
     this.setData({
-      historyWords
+      historyWords: keywordModel.getHistory()
     })
 
-    hotWords.then(res => {
+    keywordModel.getHot().then(res => {
       this.setData({
         hotWords: res.hot
       })
